@@ -4,7 +4,7 @@
   "description": "Project to resolve Luiza Labs challenge.",
   "scripts": {
     "dev": "nodemon src/app.ts",
-    "dev:debug": "nodemon --inspect src/app.ts",
+    "dev:debug": "nodemon --inspect=7000 src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
