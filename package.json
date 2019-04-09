@@ -23,7 +23,9 @@
   },
   "homepage": "https://github.com/Charlinho/luizalabs-challenge#readme",
   "dependencies": {
+    "@types/event-stream": "^3.3.34",
     "@types/express": "^4.16.1",
+    "event-stream": "^4.0.1",
     "express": "^4.16.4",
     "nodemon": "^1.18.10",
     "ts-node": "^8.0.3",
