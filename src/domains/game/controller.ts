@@ -6,6 +6,6 @@ export default {
   index: (_req: express.Request, res: express.Response) => {
     GameRules.getMatches();
     
-    res.send(GameRules.getMatches());
+    res.send(null);
   }
 };

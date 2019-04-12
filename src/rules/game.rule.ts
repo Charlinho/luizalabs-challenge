@@ -1,8 +1,7 @@
-// import Game from './game.interface';
+import Game from './game.interface';
 import fileAdapter from '../adapters/file-adapter';
-// import Game from './game.interface';
 
-// const games: Array<Game> = [];
+const games: Array<Game> = [];
 
 const GameRule = {
     getMatches: () => _getMatcheFromFile()
@@ -11,7 +10,7 @@ const GameRule = {
 function _getMatcheFromFile(): void {
     fileAdapter.read().on('end', () => {
         
-        let index = 0
+        let index = 0;
 
         while (index < fileAdapter.getLines().length) {
 
@@ -22,8 +21,12 @@ function _getMatcheFromFile(): void {
                 let nextIndex = index + 1;
 
                 while (_isGameLine(fileAdapter.getLines()[nextIndex])) {
-                    
-                    console.log(fileAdapter.getLines()[nextIndex]);
+
+                    const nextLine = fileAdapter.getLines()[nextIndex];
+
+                    if (_isKillLine(nextLine)) {
+                        _buildMatch(nextLine);
+                    }
                     
                     index++;
                     nextIndex++;
@@ -33,6 +36,16 @@ function _getMatcheFromFile(): void {
             index++;
         }
     });
+}
+
+function _buildMatch(line: string): void {
+    const game: Game = {
+        total_kills: line.match()
+    };
+}
+
+function _isKillLine(line: string): boolean {
+    return !!line.match(/Kill/ig)
 }
 
 function _isGameLine(line: string): boolean {
