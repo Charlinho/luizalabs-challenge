@@ -1,7 +1,7 @@
 interface Game {
-    total_kills: 0,
-    players: Player [],
     kills: {}
+    players: Player[],
+    total_kills: number,
 }
 
 interface Player {
