@@ -6,7 +6,7 @@ const filePath = '../__files/games.log';
 
 const lines: Array<string> = [];
 
-const fileAdapter = {
+const FileAdapter = {
     read: () => {
         const file = fs.createReadStream(path.join(__dirname, filePath))
             .pipe(es.split())
@@ -23,4 +23,4 @@ const fileAdapter = {
     }
 }
 
-export default fileAdapter;
+export default FileAdapter;

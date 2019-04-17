@@ -1,45 +1,40 @@
 import Game from './game.interface';
-import fileAdapter from '../adapters/file-adapter';
-
-// const games: Array<Game> = [];
+import ReadFileRule from './read-file.rule';
+import FileAdapter from '../adapters/file-adapter';
 
 const GameRule = {
     getMatches: () => _getMatcheFromFile()
 }
 
 function _getMatcheFromFile(): void {
-    fileAdapter.read().on('end', () => {
+    FileAdapter.read().on('end', () => {
         
         let index = 0;
         let game: Game;
 
-        while (index < fileAdapter.getLines().length) {
+        const lines = FileAdapter.getLines();
 
-            const line = fileAdapter.getLines()[index];
+        while (index < lines.length) {
 
-            if (_isStartGame(line)) {
+            const line = lines[index];
+
+            if (ReadFileRule.isStartGame(line)) {
 
                 let nextIndex = index + 1;
                 
-                game = {total_kills: 0, kills: {}, players: []};
+                game = getEmptyGame();
 
-                while (_isGameLine(fileAdapter.getLines()[nextIndex])) {
+                while (ReadFileRule.isGameLine(lines[nextIndex])) {
 
-                    const nextLine = fileAdapter.getLines()[nextIndex];
-
-                    if (_isKillLine(nextLine)) {
-                        game.total_kills = game.total_kills + 1;
-                    }
-
-                    if (_isPlayerLine(nextLine)) {
-                        console.log(_getPlayer(nextLine));
-                    }
+                    const nextLine = lines[nextIndex];
+                    
+                    game = buildGame(game, nextLine);
                     
                     index++;
                     nextIndex++;
                 }
             
-                // console.log(game);
+                console.log(game);
             }
 
             index++;
@@ -47,29 +42,32 @@ function _getMatcheFromFile(): void {
     });
 }
 
-function _getPlayer(line: string): any {
-    const playerName = line.match(/(?<=n\\)(.*?)(?=[\\])/g);
-    return playerName ? playerName[0] : null;
+function getEmptyGame(): Game {
+    return { total_kills: 0, kills: [], players: [] };
 }
 
-function _isPlayerLine(line: string): boolean {
-    return !!line.match(/ClientUserinfoChanged/g);
-}
+function buildGame(game: Game, nextLine: string): Game {
 
-function _isKillLine(line: string): boolean {
-    return !!line.match(/Kill/g)
-}
+    if (ReadFileRule.isPlayerLine(nextLine)) {
 
-function _isGameLine(line: string): boolean {
-    return !_isEndGame(line) && !_isStartGame(line) ;
-}
+        const player = ReadFileRule.getPlayer(nextLine);
+        
+        if (game.players.length === 0) {
+            game.players.push(player);
+        }
 
-function _isEndGame(line: string): boolean {
-    return !!line.match(/ShutdownGame/g);
-}
+        if (!game.players.find((p) => p === player)) {
+            game.players.push(player);
+        }
+    }
 
-function _isStartGame(line: string): boolean {
-    return !!line.match(/InitGame/g);
+    if (ReadFileRule.isKillLine(nextLine)) {
+        game.total_kills = game.total_kills + 1;
+
+        game.kills = [{name: '', amount: 0}];
+    }
+
+    return {...game};
 }
 
 export default GameRule;
