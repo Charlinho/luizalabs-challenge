@@ -85,5 +85,4 @@ function getEmptyGame(): Game {
     return { total_kills: 0, kills: [], players: [] };
 }
 
-
 export default GameRule;
