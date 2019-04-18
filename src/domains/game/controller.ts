@@ -4,8 +4,6 @@ import GameRules from '../../rules/game.rule';
 
 export default {
   index: (_req: express.Request, res: express.Response) => {
-    GameRules.getMatches();
-    
-    res.send(null);
+    GameRules.getMatches().then((result) => res.send(result));
   }
 };

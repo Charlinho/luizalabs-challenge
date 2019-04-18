@@ -8,7 +8,9 @@ const GameRule = {
 
 const games: Game[] = [];
 
-function _getMatcheFromFile(): void {
+function _getMatcheFromFile(): Promise<any> {
+   return new Promise((resolve) => {
+
     FileAdapter.read().on('end', () => {
         
         let index = 0;
@@ -48,9 +50,7 @@ function _getMatcheFromFile(): void {
                         }
                     }
                 
-                    if (ReadFileRule.isKillLine(nextLine)) {
-                        game.total_kills = game.total_kills + 1;
-                        
+                    if (ReadFileRule.isKillLine(nextLine)) {                        
                         game.kills.forEach((kill) => {
                             
                             if (ReadFileRule.isSucideLine(nextLine, kill.name)) {
@@ -60,6 +60,7 @@ function _getMatcheFromFile(): void {
 
                             if (ReadFileRule.isKillerLine(nextLine, kill.name)) {
                                 kill.score = kill.score + 1;
+                                game.total_kills = game.total_kills + 1;
                             }
                         });
                     }
@@ -67,14 +68,17 @@ function _getMatcheFromFile(): void {
                     index++;
                     nextIndex++;
                 }
-
+                
                 games.push(game);
             }
 
             index++;
-
         }
-    });
+
+        resolve(games);
+
+        });
+   });
 }
 
 function getEmptyGame(): Game {
