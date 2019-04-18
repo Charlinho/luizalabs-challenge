@@ -6,6 +6,8 @@ const GameRule = {
     getMatches: () => _getMatcheFromFile()
 }
 
+const games: Game[] = [];
+
 function _getMatcheFromFile(): void {
     FileAdapter.read().on('end', () => {
         
@@ -28,16 +30,49 @@ function _getMatcheFromFile(): void {
 
                     const nextLine = lines[nextIndex];
                     
-                    game = buildGame(game, nextLine);
-                    
+                    if (ReadFileRule.isPlayerLine(nextLine)) {
+
+                        const playerName = ReadFileRule.getPlayerName(nextLine);
+                        
+                        if (game.players.length === 0) {
+                            game.players.push({name: playerName});
+                        }
+
+                        if (game.kills.length === 0) {
+                            game.kills.push({name: playerName, score: 0});
+                        }
+                
+                        if (!game.players.find((p) => p.name === playerName)) {
+                            game.players.push({name: playerName});
+                            game.kills.push({name: playerName, score: 0});
+                        }
+                    }
+                
+                    if (ReadFileRule.isKillLine(nextLine)) {
+                        game.total_kills = game.total_kills + 1;
+                        
+                        game.kills.forEach((kill) => {
+                            
+                            if (ReadFileRule.isSucideLine(nextLine, kill.name)) {
+                                kill.score = kill.score - 1;
+                                return
+                            }
+
+                            if (ReadFileRule.isKillerLine(nextLine, kill.name)) {
+                                kill.score = kill.score + 1;
+                            }
+                        });
+                    }
+
                     index++;
                     nextIndex++;
                 }
-            
-                console.log(game);
+
+                games.push(game);
             }
 
             index++;
+
         }
     });
 }
@@ -46,28 +81,5 @@ function getEmptyGame(): Game {
     return { total_kills: 0, kills: [], players: [] };
 }
 
-function buildGame(game: Game, nextLine: string): Game {
-
-    if (ReadFileRule.isPlayerLine(nextLine)) {
-
-        const player = ReadFileRule.getPlayer(nextLine);
-        
-        if (game.players.length === 0) {
-            game.players.push(player);
-        }
-
-        if (!game.players.find((p) => p === player)) {
-            game.players.push(player);
-        }
-    }
-
-    if (ReadFileRule.isKillLine(nextLine)) {
-        game.total_kills = game.total_kills + 1;
-
-        game.kills = [{name: '', amount: 0}];
-    }
-
-    return {...game};
-}
 
 export default GameRule;

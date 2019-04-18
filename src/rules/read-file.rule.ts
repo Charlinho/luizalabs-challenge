@@ -1,5 +1,4 @@
 const ReadFileRule = {
-    getPlayer: (line: string) => _getPlayer(line),
 
     isEndGame: (line: string) => _isEndGame(line),
 
@@ -9,10 +8,18 @@ const ReadFileRule = {
 
     isStartGame: (line: string) => _isStartGame(line),
 
-    isPlayerLine: (line: string) => _isPlayerLine(line)
+    isPlayerLine: (line: string) => _isPlayerLine(line),
+
+    getPlayerName: (line: string) => _getPlayerName(line),
+
+    isKillerLine: (line: string, playerName: string) => _isKillerLine(line, playerName),
+
+    isSucideLine: (line: string, playerName: string) => _isSucideLine(line, playerName),
+
+    playerDeadByWorld: (line: string, playerName: string) => _playerDeadByWorld(line, playerName)
 };
 
-function _getPlayer(line: string): any {
+function _getPlayerName(line: string): any {
     const playerName = line.match(/(?<=n\\)(.*?)(?=[\\])/g);
     return playerName ? playerName[0] : null;
 }
@@ -35,6 +42,18 @@ function _isEndGame(line: string): boolean {
 
 function _isStartGame(line: string): boolean {
     return !!line.match(/InitGame/g);
+}
+
+function _playerDeadByWorld(line: string, playerName: string): boolean {
+    return line.includes('<world> killed '.concat(playerName));
+}
+
+function _isKillerLine(line: string, playerName: string): boolean {
+    return line.includes(playerName.concat(' killed')) ;
+}
+
+function _isSucideLine(line: string, playerName: string): boolean {
+    return line.includes(playerName.concat(' killed ').concat(playerName)) || _playerDeadByWorld(line, playerName);
 }
 
 export default ReadFileRule;

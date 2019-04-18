@@ -1,4 +1,5 @@
 interface Game {
+    
     kills: Kill[], 
     players: Player[],
     total_kills: number,
@@ -10,7 +11,7 @@ interface Player {
 
 interface Kill {
     name: string;
-    amount: number;
+    score: number;
 }
 
 export default Game;
