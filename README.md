@@ -6,7 +6,7 @@ Before run the App, is required to install dependecies, to do this, run command 
 
 <code>npm install</code>
 
-## Run App.
+## Run App
 Run App using comand below:
 
 <code>npm run dev</code>
