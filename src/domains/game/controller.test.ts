@@ -2,7 +2,7 @@ import server from '../server';
 import request from 'supertest';
 import Game from '../../rules/game.interface';
 
-describe('GET /games', () => {
+describe('GET /games Test', () => {
 
     it('should return all games', async () => {
         const result = await request(server).get('/games');

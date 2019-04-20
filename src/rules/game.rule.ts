@@ -1,6 +1,7 @@
 import Game from './game.interface';
 import ReadFileRule from './read-file.rule';
 import FileAdapter from '../adapters/file-adapter';
+import logger from '../core/logger';
 
 const GameRule = {
     getMatches: () => _getMatcheFromFile()
@@ -13,6 +14,8 @@ function _getMatcheFromFile(): Promise<any> {
 
     FileAdapter.read().on('end', () => {
         
+        logger.info('Reading file...'); 
+
         let index = 0;
         let game: Game;
 
@@ -75,6 +78,7 @@ function _getMatcheFromFile(): Promise<any> {
             index++;
         }
 
+        logger.info('File read successfully'); 
         resolve(games);
 
         });
